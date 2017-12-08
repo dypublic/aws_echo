@@ -7,6 +7,7 @@ import (
 	//"os"
 	"time"
     "fmt"
+	"encoding/json"
 )
 
 /*
@@ -66,11 +67,25 @@ func GetMetaData() AWSMetaData {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    result := GetMetaData()
-    fmt.Fprintf(w, "%v\n", result)
+    data := GetMetaData()
+    res, _ := json.Marshal(data)
+    w.Write(res)
+    //fmt.Fprintf(w, "%v\n", result)
+}
+
+var StaticRes []byte
+
+func init() {
+	data := GetMetaData()
+	StaticRes, _ = json.Marshal(data)
+}
+
+func handlerStatic(w http.ResponseWriter, r *http.Request) {
+	w.Write(StaticRes)
 }
 
 func main() {
     http.HandleFunc("/", handler)
+	http.HandleFunc("/static", handlerStatic)
     http.ListenAndServe(":8080", nil)
 }
