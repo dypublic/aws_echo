@@ -1,4 +1,4 @@
-FROM warrior/baseimage:1.3
+FROM alpine
 MAINTAINER X
 
 ENV HOME_DIR /opt/aws_echo

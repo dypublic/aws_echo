@@ -8,6 +8,8 @@ import (
 	"time"
     "fmt"
 	"encoding/json"
+    "flag"
+    "log"
 )
 
 /*
@@ -70,7 +72,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
     data := GetMetaData()
     res, _ := json.Marshal(data)
     w.Write(res)
-    //fmt.Fprintf(w, "%v\n", result)
+    log.Println(string(res))
 }
 
 var StaticRes []byte
@@ -82,9 +84,16 @@ func init() {
 
 func handlerStatic(w http.ResponseWriter, r *http.Request) {
 	w.Write(StaticRes)
+	log.Println(string(StaticRes))
 }
 
 func main() {
+    log.SetFlags(log.LstdFlags | log.LUTC)
+    verbose := flag.Bool("v", false, "verbose output")
+    flag.Parse()
+    if *verbose == false {
+        log.SetOutput(ioutil.Discard)
+    }
     http.HandleFunc("/", handler)
 	http.HandleFunc("/static", handlerStatic)
     http.ListenAndServe(":8080", nil)
